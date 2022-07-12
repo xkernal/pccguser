@@ -37,6 +37,6 @@ public class User {
     }
 
     public boolean updateCheck(Password oldPassword) {
-        return password.getPassword().equals(oldPassword.getPassword());
+        return oldPassword.isSame(this.password);
     }
 }

@@ -38,6 +38,20 @@ public class UserDomainService {
         publisher.publish(UserCreateEvent.make(user.getUserName(), userId));
     }
 
+    public UserVO selectByUserNameAndPassword(String userName, Password oldPassword) {
+        User existsUser = userRepository.selectByUserName(userName);
+        if(existsUser==null || !oldPassword.isSame(existsUser.getPassword())) {
+            throw new PcgException("userName or password error", ErrorCode.IllegalArgument.getCode());
+        }
+        return UserFactory.makeVO(existsUser);
+    }
+
+    public MultiResponse<UserVO> selectByPage(UserQuery userQuery) {
+        MultiResponse<User> response = userRepository.selectByPage(userQuery);
+        List<UserVO> userVOS = response.getData().stream().map(item->UserFactory.makeVO(item)).collect(Collectors.toList());
+        return MultiResponse.of(userVOS, response.getTotal());
+    }
+
     public void disableUser(List<Long> userIds) {
         if(userIds.size()==1) {
             long userId = userIds.get(0);
@@ -73,11 +87,5 @@ public class UserDomainService {
         }
         user.setModifyTime(new Date());
         userRepository.update(user);
-    }
-
-    public MultiResponse<UserVO> selectByPage(UserQuery userQuery) {
-        MultiResponse<User> response = userRepository.selectByPage(userQuery);
-        List<UserVO> userVOS = response.getData().stream().map(item->UserFactory.makeVO(item)).collect(Collectors.toList());
-        return MultiResponse.of(userVOS, response.getTotal());
     }
 }

@@ -1,6 +1,7 @@
 package com.pccg.pccguser.application;
 
 import com.pccg.pccguser.PccguserApplication;
+import com.pccg.pccguser.application.vo.UserVO;
 import com.pccg.pccguser.domain.entity.User;
 import com.pccg.pccguser.domain.entity.valueObject.Password;
 import com.pccg.pccguser.domain.reposity.facade.UserRepository;
@@ -48,6 +49,22 @@ public class UserApplicationServiceTest {
         userApplicationService.registerUser(user);
         assertThrows(PcgException.class, ()->userApplicationService.registerUser(user));
     }
+
+    @Test
+    @Transactional
+    public void selectUserTest() {
+        User user = new User();
+        user.setUserName("harry1");
+        user.setPassword(Password.create("p1"));
+        user.setEmail("harry@gmail.com");
+        userApplicationService.registerUser(user);
+
+        UserVO userVO = userApplicationService.selectUser("harry1", "p1");
+        assertNotNull(userVO);
+
+        assertThrows(PcgException.class, ()->userApplicationService.selectUser("harry1", "p2"));
+    }
+
 
     @Test
     @Transactional

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import com.pccg.pccguser.application.UserApplicationService;
 import com.pccg.pccguser.application.command.EditPasswordCmd;
@@ -12,6 +13,7 @@ import com.pccg.pccguser.application.command.RegisterUserCmd;
 import com.pccg.pccguser.application.vo.UserVO;
 import com.pccg.pccguser.interfaces.api.MultiResponse;
 import com.pccg.pccguser.interfaces.api.Response;
+import com.pccg.pccguser.interfaces.api.SingleResponse;
 import com.pccg.pccguser.interfaces.api.UserQuery;
 import com.pccg.pccguser.interfaces.assembler.UserAssembler;
 import io.swagger.annotations.Api;
@@ -42,6 +44,13 @@ public class UserController {
     public Response register(@RequestBody @Valid RegisterUserCmd registerUserCmd) {
         userApplicationService.registerUser(UserAssembler.to(registerUserCmd));
         return Response.buildSuccess();
+    }
+
+    @ApiOperation("查询用户")
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @ResponseBody
+    public SingleResponse<UserVO> get(@NotNull String userName,@NotNull String password) {
+        return SingleResponse.of(userApplicationService.selectUser(userName, password));
     }
 
     @ApiOperation("删除用户")

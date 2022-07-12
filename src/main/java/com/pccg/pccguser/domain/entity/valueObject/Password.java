@@ -14,6 +14,10 @@ public class Password {
          return new Password(DigestUtils.md5DigestAsHex(source.getBytes()));
     }
 
+    public boolean isSame(Password password){
+        return this.password.equals(password.getPassword());
+    }
+
     public String getPassword() {
         return password;
     }

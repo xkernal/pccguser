@@ -32,6 +32,10 @@ public class UserApplicationService {
         return userDomainService.selectByPage(userQuery);
     }
 
+    public UserVO selectUser(String userName, String password) {
+        return userDomainService.selectByUserNameAndPassword(userName, Password.create(password));
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void updateUserBasicInfo(User user) {
         userDomainService.updateUserBasic(user);
